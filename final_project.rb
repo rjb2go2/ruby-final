@@ -6,8 +6,8 @@ require 'link_header'
 require 'json'
 require 'csv'
 
-canvas_token = '8940~DsRpPPBDzokxwGimtVo2eWPmM4RWY7J2CC1mZUxdx7Qw5Fo2PgOTSOBINGXewBPX'
-canvas_url = 'https://gcccd.test.instructure.com'
+canvas_token = 'auth-token goes here'
+canvas_url = 'https://yourcollege.test.instructure.com'
 api_endpoint = '/api/v1/accounts/19/courses?include[]=teachers&include[]=total_students&enrollment_term_id=8' # if passing parameters in the URL add a ? followed by parameter # to pass more than one parameter, separate with a & symbol
 output_csv = 'C:\Users\rhonda.bauerlein\Dropbox\Canvas\code\ruby\final-project\output.csv'
 
