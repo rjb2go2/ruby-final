@@ -6,14 +6,15 @@ require 'link_header'
 require 'json'
 require 'csv'
 
-canvas_token = ''
-canvas_url = ''
+canvas_token = '8940~DsRpPPBDzokxwGimtVo2eWPmM4RWY7J2CC1mZUxdx7Qw5Fo2PgOTSOBINGXewBPX'
+canvas_url = 'https://gcccd.test.instructure.com'
 api_endpoint = '/api/v1/accounts/19/courses?include[]=teachers&include[]=total_students&enrollment_term_id=8' # if passing parameters in the URL add a ? followed by parameter # to pass more than one parameter, separate with a & symbol
 output_csv = 'C:\Users\rhonda.bauerlein\Dropbox\Canvas\code\ruby\final-project\output.csv'
 
-CSV.open(output_csv, 'wb') do |csv| # Create new file or erase existing file with same name
-    csv << ["canvas_course_id", "sis_course_id", "course_code", "teacher_names", "student_count", "published"]
-end
+# create the CSV file header row with column headings
+  CSV.open(output_csv, 'wb') do |csv| # Create new file or erase existing file with same name
+    csv << ["Canvas Course ID", "SIS Course ID", "Teacher", "Student Count", "Published"]
+  end
 
 request_url = "#{canvas_url}#{api_endpoint}" 
 count = 0
@@ -42,21 +43,33 @@ while more_data   # while more_data is true keep looping through the data
 
         if response.code == 200
             data = JSON.parse(response.body)
+            teacher_count = 0
             data.each do |courses| # puts courses
-                count += 1
-                teacher_names = ""
-                # process teachers
-                if courses['teachers'] != nil
-                    courses['teachers'].each do |course_teachers|
-                        if course_teachers['display_name'] != nil
-                            teacher_names += "#{course_teachers['display_name']}, "
+                m_course_id = courses['id']   # reference the course_code field in the array and store as the course_code
+                m_sis_course_id = courses['sis_course_id']
+                m_published = courses['workflow_state']
+                m_total_students = courses['total_students']
+
+                teachers = courses['teachers']
+                if teachers != []
+              
+                    teachers.each do |teachers|
+                        m_teacher_name = teachers['display_name']
+                        m_teacher_image = teachers['avatar_image_url'] 
+                        
+                        puts "#{m_course_id}, #{m_sis_course_id}, #{m_teacher_name}, #{m_published}"
+                        #write a row to the CSV file
+                        CSV.open(output_csv, 'a') do |csv|
+                            csv << [m_course_id, m_sis_course_id, m_teacher_name, m_total_students, m_published]
                         end
                     end
+                    #puts "#{course_code}"                    # output course codes on one line
+                    puts ""
                 end
-                puts "#{count} - #{courses['id']}, #{courses['sis_course_id']}, #{courses['course_code']}, #{teacher_names}, #{courses['total_students']}, #{courses['workflow_state']}"
-                CSV.open(output_csv, 'a') do |csv|
-                    csv << [courses['id'], courses['sis_course_id'], courses['course_code'], teacher_names, courses['total_students'], courses['workflow_state']]
-                end
+                #Output to the screen what you're putting into the CSV file
+                #puts "#{count} - #{courses['id']}, #{courses['sis_course_id']}, #{courses['course_code']}, teacher name #{courses['total_students']}, #{courses['workflow_state']}"
+                
+               #end
             end
         else
             puts "Something went wrong! Response code was #{response.code}"
