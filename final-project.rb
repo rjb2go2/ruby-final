@@ -6,8 +6,8 @@ require 'json'
 require 'csv'
 
 # Initialize variables
-canvas_token = '8940~yTRUoszOamzEDaKMd5Xu70WBrv1xlBvxfA5vMCtDYgupa1Y8pK4vJMUDGyaehekB'
-canvas_url = 'https://gcccd.instructure.com'
+canvas_token = ''
+canvas_url = ''
 api_endpoint = '/api/v1/accounts/4/courses?include[]=teachers&include[]=total_students&enrollment_term_id=8' # if passing parameters in the URL add a ? followed by parameter # to pass more than one parameter, separate with a & symbol
 request_url = "#{canvas_url}#{api_endpoint}" 
 course_count = 0
